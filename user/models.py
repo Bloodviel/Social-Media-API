@@ -1,6 +1,10 @@
+import os.path
+import uuid
+
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
 
@@ -40,6 +44,13 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
+def user_image_file_path(instance, filename):
+    _, ext = os.path.splitext(filename)
+    filename = f"{slugify(instance.username)}-{uuid.uuid4()}.{ext}"
+
+    return os.path.join("uploads/users/", filename)
+
+
 class User(AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
 
@@ -52,6 +63,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=60)
     bio = models.TextField(blank=True)
+    image = models.ImageField(null=True, upload_to=user_image_file_path)
 
     class Meta:
         ordering = ["first_name"]
