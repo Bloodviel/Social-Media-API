@@ -27,6 +27,19 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return UserSerializer
 
+    def get_queryset(self):
+        queryset = self.queryset
+        email = self.request.query_params.get("email")
+        username = self.request.query_params.get("username")
+
+        if email:
+            queryset = queryset.filter(email__icontains=email)
+
+        if username:
+            queryset = queryset.filter(username__icontains=username)
+
+        return queryset
+
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
