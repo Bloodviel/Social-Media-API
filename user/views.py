@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from user.serializers import UserSerializer
+from user.permissions import IsAdminOrIsAuthenticatedReadOnly
+from user.serializers import UserSerializer, UserDetailSerializer, UserListSerializer
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -15,6 +16,16 @@ class CreateUserView(generics.CreateAPIView):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
+    permission_classes = (IsAdminOrIsAuthenticatedReadOnly,)
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return UserDetailSerializer
+
+        if self.action == "list":
+            return UserListSerializer
+
+        return UserSerializer
 
 
 class ManageUserView(generics.RetrieveUpdateAPIView):

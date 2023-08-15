@@ -34,6 +34,35 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class UserListSerializer(UserSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "id",
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "is_staff",
+        ]
+
+
+class UserDetailSerializer(UserSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "id",
+            "email",
+            "username",
+            "first_name",
+            "last_name",
+            "bio",
+            "is_staff",
+        ]
+
+
 class AuthTokenSerializer(serializers.Serializer):
     email = serializers.CharField(
         label=_("Email"),
