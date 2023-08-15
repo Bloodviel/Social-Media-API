@@ -46,7 +46,7 @@ class UserManager(BaseUserManager):
 
 def user_image_file_path(instance, filename):
     _, ext = os.path.splitext(filename)
-    filename = f"{slugify(instance.username)}-{uuid.uuid4()}.{ext}"
+    filename = f"{slugify(instance.username)}-{uuid.uuid4()}{ext}"
 
     return os.path.join("uploads/users/", filename)
 
