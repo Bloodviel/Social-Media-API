@@ -6,8 +6,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from user.models import Post
 from user.permissions import IsAdminOrIsAuthenticatedReadOnly
-from user.serializers import UserSerializer, UserDetailSerializer, UserListSerializer, UserFollowersSerializer
+from user.serializers import UserSerializer, UserDetailSerializer, UserListSerializer, UserFollowersSerializer, \
+    PostSerializer, PostListSerializer, PostDetailSerializer
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -99,3 +101,24 @@ class LogoutView(APIView):
 
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = (IsAdminOrIsAuthenticatedReadOnly,)
+
+
+
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return PostListSerializer
+
+        if self.action == "retrieve":
+            return PostDetailSerializer
+
+        return PostSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)

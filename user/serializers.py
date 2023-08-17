@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model, authenticate
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 
+from user.models import Post
+
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -79,6 +81,58 @@ class UserFollowersSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ["id", "followers"]
+
+
+class PostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Post
+        fields = [
+            "image",
+            "hashtag",
+            "title",
+            "content",
+        ]
+
+
+class PostListSerializer(PostSerializer):
+    created_by = serializers.CharField(
+        source="created_by.username",
+        read_only=True
+    )
+
+    class Meta:
+        model = Post
+        fields = [
+            "id",
+            "hashtag",
+            "title",
+            "created_by",
+            "created_at",
+            "get_comments",
+            "get_likes",
+        ]
+
+
+class PostDetailSerializer(PostSerializer):
+    created_by = serializers.CharField(
+        source="created_by.username",
+        read_only=True
+    )
+
+    class Meta:
+        model = Post
+        fields = [
+            "id",
+            "image",
+            "hashtag",
+            "title",
+            "content",
+            "created_by",
+            "created_at",
+            "get_comments",
+            "get_likes",
+        ]
 
 
 class AuthTokenSerializer(serializers.Serializer):
