@@ -106,6 +106,14 @@ class Post(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def get_comments(self):
+        return self.comments.count()
+
+    @property
+    def get_likes(self):
+        return self.likes.count()
+
     class Meta:
         ordering = ["-created_at"]
 
