@@ -47,7 +47,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(
         methods=["PATCH"],
         detail=True,
-        url_path="following",
+        url_path="follow",
         permission_classes=(IsAuthenticated,)
     )
     def following(self, request, pk=None):
@@ -57,6 +57,23 @@ class UserViewSet(viewsets.ModelViewSet):
 
         if user != follower and follower not in user.followers.all():
             user.followers.add(follower)
+            user.save()
+
+        return Response(status=status.HTTP_200_OK)
+
+    @action(
+        methods=["PATCH"],
+        detail=True,
+        url_path="unfollow",
+        permission_classes=(IsAuthenticated,)
+    )
+    def unfollow(self, request, pk=None):
+        """Endpoint for users to unfollow other users"""
+        user = self.get_object()
+        follower = self.request.user
+
+        if user != follower and follower in user.followers.all():
+            user.followers.remove(follower)
             user.save()
 
         return Response(status=status.HTTP_200_OK)

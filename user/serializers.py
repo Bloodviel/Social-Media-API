@@ -9,6 +9,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = [
             "id",
+            "get_followers",
+            "get_followings",
             "image",
             "email",
             "password",
@@ -52,6 +54,7 @@ class UserListSerializer(UserSerializer):
 
 class UserDetailSerializer(UserSerializer):
     followers = serializers.StringRelatedField(many=True)
+    follows = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = get_user_model()
@@ -59,6 +62,8 @@ class UserDetailSerializer(UserSerializer):
             "id",
             "get_followers",
             "followers",
+            "get_followings",
+            "follows",
             "image",
             "email",
             "username",
