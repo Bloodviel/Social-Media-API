@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
 from rest_framework import viewsets, generics, status
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.permissions import IsAdminOrIsAuthenticatedReadOnly
-from user.serializers import UserSerializer, UserDetailSerializer, UserListSerializer
+from user.serializers import UserSerializer, UserDetailSerializer, UserListSerializer, UserFollowersSerializer
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -25,6 +26,9 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return UserListSerializer
 
+        if self.action == "following":
+            return UserFollowersSerializer
+
         return UserSerializer
 
     def get_queryset(self):
@@ -39,6 +43,23 @@ class UserViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(username__icontains=username)
 
         return queryset
+
+    @action(
+        methods=["PATCH"],
+        detail=True,
+        url_path="following",
+        permission_classes=(IsAuthenticated,)
+    )
+    def following(self, request, pk=None):
+        """Endpoint for users to follow other users"""
+        user = self.get_object()
+        follower = self.request.user
+
+        if user != follower and follower not in user.followers.all():
+            user.followers.add(follower)
+            user.save()
+
+        return Response(status=status.HTTP_200_OK)
 
 
 class ManageUserView(generics.RetrieveUpdateAPIView):

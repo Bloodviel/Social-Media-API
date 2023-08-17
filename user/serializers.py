@@ -51,11 +51,14 @@ class UserListSerializer(UserSerializer):
 
 
 class UserDetailSerializer(UserSerializer):
+    followers = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = get_user_model()
         fields = [
             "id",
+            "get_followers",
+            "followers",
             "image",
             "email",
             "username",
@@ -64,6 +67,13 @@ class UserDetailSerializer(UserSerializer):
             "bio",
             "is_staff",
         ]
+
+
+class UserFollowersSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = get_user_model()
+        fields = ["id", "followers"]
 
 
 class AuthTokenSerializer(serializers.Serializer):
