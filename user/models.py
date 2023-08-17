@@ -65,10 +65,10 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=60)
     bio = models.TextField(blank=True)
     image = models.ImageField(null=True, upload_to=user_image_file_path)
-    follows = models.ManyToManyField(
+    followers = models.ManyToManyField(
         "User",
         default=0,
-        related_name="followers",
+        related_name="follows",
         symmetrical=False
     )
 
