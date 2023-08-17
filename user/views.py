@@ -29,7 +29,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             return UserListSerializer
 
-        if self.action == "following":
+        if self.action in ("follow", "unfollow"):
             return UserFollowersSerializer
 
         return UserSerializer
@@ -53,7 +53,7 @@ class UserViewSet(viewsets.ModelViewSet):
         url_path="follow",
         permission_classes=(IsAuthenticated,)
     )
-    def following(self, request, pk=None):
+    def follow(self, request, pk=None):
         """Endpoint for users to follow other users"""
         user = self.get_object()
         follower = self.request.user
