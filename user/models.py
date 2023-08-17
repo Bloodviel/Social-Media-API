@@ -1,6 +1,7 @@
 import os.path
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
@@ -64,9 +65,23 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=60)
     bio = models.TextField(blank=True)
     image = models.ImageField(null=True, upload_to=user_image_file_path)
+    follows = models.ManyToManyField(
+        "User",
+        default=0,
+        related_name="followers",
+        symmetrical=False
+    )
 
     class Meta:
         ordering = ["first_name"]
+
+    @property
+    def get_followers(self):
+        return self.followers.count()
+
+    @property
+    def get_followings(self):
+        return self.follows.count()
     
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
