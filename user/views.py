@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework import viewsets, generics, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -7,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models import Post
-from user.permissions import IsAdminOrIsAuthenticatedReadOnly
+from user.permissions import IsAdminOrIsAuthenticatedReadOnly, IsCreatedOrReadOnly
 from user.serializers import UserSerializer, UserDetailSerializer, UserListSerializer, UserFollowersSerializer, \
     PostSerializer, PostListSerializer, PostDetailSerializer
 
@@ -106,11 +107,15 @@ class LogoutView(APIView):
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = (IsAdminOrIsAuthenticatedReadOnly,)
 
     def get_permissions(self):
         if self.action == "create":
-            return (IsAuthenticated,)
+            return [IsAuthenticated()]
+
+        if self.action in ("update", "partial_update", "destroy"):
+            return [IsCreatedOrReadOnly()]
+
+        return super().get_permissions()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -120,6 +125,24 @@ class PostViewSet(viewsets.ModelViewSet):
             return PostDetailSerializer
 
         return PostSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        hashtag = self.request.query_params.get("hashtag")
+        username = self.request.query_params.get("username")
+
+        if hashtag:
+            queryset = queryset.filter(hashtag__icontains=hashtag)
+        if username:
+            queryset = queryset.filter(created_by=username)
+
+        queryset = queryset.filter(
+            Q(created_by=self.request.user)
+            | Q(created_by__in=self.request.user.follows.all())
+        )
+
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
