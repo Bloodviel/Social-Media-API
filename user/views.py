@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, generics, status, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -84,6 +85,23 @@ class UserViewSet(viewsets.ModelViewSet):
             user.save()
 
         return Response(status=status.HTTP_200_OK)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="email",
+                type=str,
+                description="Filter by email (ex. ?email=Youre@mail.com)"
+            ),
+            OpenApiParameter(
+                name="username",
+                type=str,
+                description="Filter by username (ex. ?username=YourUsername)"
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class ManageUserView(generics.RetrieveUpdateAPIView):
@@ -196,6 +214,23 @@ class PostViewSet(viewsets.ModelViewSet):
         )
 
         return Response(status=status.HTTP_200_OK)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="hashtag",
+                type=str,
+                description="Filter by hashtag (ex. ?hashtag=YourHashtag)"
+            ),
+            OpenApiParameter(
+                name="username",
+                type=str,
+                description="Filter by username (ex. ?username=YourUsername)"
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class LikeListView(generics.ListAPIView):
