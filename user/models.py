@@ -139,7 +139,7 @@ class Comment(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.user} - {self.post}"
+        return f"{self.user}: {self.content}"
 
 
 class Like(models.Model):

@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model, authenticate
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 
-from user.models import Post, Like
+from user.models import Post, Like, Comment
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -119,6 +119,7 @@ class PostDetailSerializer(PostSerializer):
         source="created_by.username",
         read_only=True
     )
+    comments = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Post
@@ -131,6 +132,7 @@ class PostDetailSerializer(PostSerializer):
             "created_by",
             "created_at",
             "get_comments",
+            "comments",
             "get_likes",
         ]
 
@@ -148,6 +150,13 @@ class LikeListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = ["id", "user", "post"]
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Comment
+        fields = ["id", "content"]
 
 
 class AuthTokenSerializer(serializers.Serializer):

@@ -9,10 +9,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from user.models import Post, Like
+from user.models import Post, Like, Comment
 from user.permissions import IsAdminOrIsAuthenticatedReadOnly, IsCreatedOrReadOnly
 from user.serializers import UserSerializer, UserDetailSerializer, UserListSerializer, UserFollowersSerializer, \
-    PostSerializer, PostListSerializer, PostDetailSerializer, LikeSerializer, LikeListSerializer
+    PostSerializer, PostListSerializer, PostDetailSerializer, LikeSerializer, LikeListSerializer, CommentSerializer
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -130,6 +130,9 @@ class PostViewSet(viewsets.ModelViewSet):
         if self.action == "like":
             return LikeSerializer
 
+        if self.action == "add_comment":
+            return CommentSerializer
+
         return PostSerializer
 
     def get_queryset(self):
@@ -169,6 +172,25 @@ class PostViewSet(viewsets.ModelViewSet):
             like.delete()
         except Http404:
             Like.objects.create(post=post, user=user, is_liked=True)
+
+        return Response(status=status.HTTP_200_OK)
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="add_comment",
+        permission_classes=(IsAuthenticated,)
+    )
+    def add_comment(self, request, pk=None):
+        """Endpoint for users to comment posts"""
+        post = self.get_object()
+        user = self.request.user
+
+        Comment.objects.create(
+            post=post,
+            user=user,
+            content=request.data["content"]
+        )
 
         return Response(status=status.HTTP_200_OK)
 
