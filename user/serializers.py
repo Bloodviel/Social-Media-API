@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model, authenticate
 from django.utils.translation import gettext as _
 from rest_framework import serializers
 
-from user.models import Post
+from user.models import Post, Like
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -133,6 +133,13 @@ class PostDetailSerializer(PostSerializer):
             "get_comments",
             "get_likes",
         ]
+
+
+class LikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Like
+        fields = ["id", "is_liked"]
 
 
 class AuthTokenSerializer(serializers.Serializer):

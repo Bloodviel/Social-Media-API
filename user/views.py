@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, generics, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -7,10 +9,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from user.models import Post
+from user.models import Post, Like
 from user.permissions import IsAdminOrIsAuthenticatedReadOnly, IsCreatedOrReadOnly
 from user.serializers import UserSerializer, UserDetailSerializer, UserListSerializer, UserFollowersSerializer, \
-    PostSerializer, PostListSerializer, PostDetailSerializer
+    PostSerializer, PostListSerializer, PostDetailSerializer, LikeSerializer
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -107,6 +109,7 @@ class LogoutView(APIView):
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    permission_classes = (IsAdminOrIsAuthenticatedReadOnly,)
 
     def get_permissions(self):
         if self.action == "create":
@@ -123,6 +126,9 @@ class PostViewSet(viewsets.ModelViewSet):
 
         if self.action == "retrieve":
             return PostDetailSerializer
+
+        if self.action == "like":
+            return LikeSerializer
 
         return PostSerializer
 
@@ -146,3 +152,23 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        url_path="like",
+        permission_classes=(IsAuthenticated,)
+    )
+    def like(self, request, pk=None):
+        """Endpoint for users to like posts"""
+        post = self.get_object()
+        user = self.request.user
+
+        try:
+            like = get_object_or_404(Like, post=post, user=user)
+            like.delete()
+        except Http404:
+            Like.objects.create(post=post, user=user, is_liked=True)
+
+        return Response(status=status.HTTP_200_OK)
+
