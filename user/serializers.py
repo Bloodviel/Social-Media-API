@@ -159,6 +159,14 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = ["id", "content"]
 
 
+class CommentListSerializer(serializers.ModelSerializer):
+    post = PostSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ["id", "user", "post", "content"]
+
+
 class AuthTokenSerializer(serializers.Serializer):
     email = serializers.CharField(
         label=_("Email"),

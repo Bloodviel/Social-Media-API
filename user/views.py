@@ -2,17 +2,19 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, generics, status
+from rest_framework import viewsets, generics, status, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models import Post, Like, Comment
 from user.permissions import IsAdminOrIsAuthenticatedReadOnly, IsCreatedOrReadOnly
 from user.serializers import UserSerializer, UserDetailSerializer, UserListSerializer, UserFollowersSerializer, \
-    PostSerializer, PostListSerializer, PostDetailSerializer, LikeSerializer, LikeListSerializer, CommentSerializer
+    PostSerializer, PostListSerializer, PostDetailSerializer, LikeSerializer, LikeListSerializer, CommentSerializer, \
+    CommentListSerializer
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -206,3 +208,31 @@ class LikeListView(generics.ListAPIView):
         queryset = queryset.filter(user=user)
 
         return queryset
+
+
+class CommentListViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    GenericViewSet
+):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset.select_related("post")
+        user = self.request.user
+
+        queryset = queryset.filter(user=user)
+
+        return queryset
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return CommentListSerializer
+
+        if self.action == "retrieve":
+            return CommentSerializer
+
+        return CommentSerializer

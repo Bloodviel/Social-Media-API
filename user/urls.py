@@ -5,11 +5,13 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 
-from user.views import CreateUserView, ManageUserView, UserViewSet, LogoutView, PostViewSet, LikeListView
+from user.views import CreateUserView, ManageUserView, UserViewSet, LogoutView, PostViewSet, LikeListView, \
+    CommentListViewSet
 
 router = DefaultRouter()
 router.register("users-list", UserViewSet)
 router.register("posts", PostViewSet)
+router.register("commented-posts", CommentListViewSet)
 
 urlpatterns = [
     path("register/", CreateUserView.as_view(), name="create"),
@@ -18,7 +20,7 @@ urlpatterns = [
     path("", include(router.urls)),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("me/", ManageUserView.as_view(), name="manage"),
-    path("liked-posts/", LikeListView.as_view(), name="liked_posts")
+    path("liked-posts/", LikeListView.as_view(), name="liked-posts"),
 ]
 
 app_name = "user"
