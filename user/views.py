@@ -39,7 +39,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return UserSerializer
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = self.queryset.prefetch_related("followers", "follows")
         email = self.request.query_params.get("email")
         username = self.request.query_params.get("username")
 
@@ -138,7 +138,7 @@ class PostViewSet(viewsets.ModelViewSet):
         return PostSerializer
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = self.queryset.prefetch_related("comments", "likes")
 
         hashtag = self.request.query_params.get("hashtag")
         username = self.request.query_params.get("username")
@@ -152,6 +152,7 @@ class PostViewSet(viewsets.ModelViewSet):
             Q(created_by=self.request.user)
             | Q(created_by__in=self.request.user.follows.all())
         )
+        queryset = queryset.select_related("created_by")
 
         return queryset
 
