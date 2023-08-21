@@ -12,7 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from user.models import Post, Like
 from user.permissions import IsAdminOrIsAuthenticatedReadOnly, IsCreatedOrReadOnly
 from user.serializers import UserSerializer, UserDetailSerializer, UserListSerializer, UserFollowersSerializer, \
-    PostSerializer, PostListSerializer, PostDetailSerializer, LikeSerializer
+    PostSerializer, PostListSerializer, PostDetailSerializer, LikeSerializer, LikeListSerializer
 
 
 class CreateUserView(generics.CreateAPIView):
@@ -172,3 +172,15 @@ class PostViewSet(viewsets.ModelViewSet):
 
         return Response(status=status.HTTP_200_OK)
 
+
+class LikeListView(generics.ListAPIView):
+    queryset = Like.objects.all()
+    serializer_class = LikeListSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset.select_related("post")
+        user = self.request.user
+
+        queryset = queryset.filter(user=user)
+
+        return queryset

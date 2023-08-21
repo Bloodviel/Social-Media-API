@@ -142,6 +142,14 @@ class LikeSerializer(serializers.ModelSerializer):
         fields = ["id", "is_liked"]
 
 
+class LikeListSerializer(serializers.ModelSerializer):
+    post = PostSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Like
+        fields = ["id", "user", "post"]
+
+
 class AuthTokenSerializer(serializers.Serializer):
     email = serializers.CharField(
         label=_("Email"),
