@@ -131,7 +131,7 @@ class PostDetailSerializer(PostSerializer):
             "content",
             "created_by",
             "created_at",
-            "comments_cout",
+            "comments_count",
             "comments",
             "likes_count",
         ]
