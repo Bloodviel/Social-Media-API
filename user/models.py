@@ -74,11 +74,11 @@ class User(AbstractUser):
         ordering = ["first_name"]
 
     @property
-    def get_followers(self):
+    def followers_count(self):
         return self.followers.count()
 
     @property
-    def get_followings(self):
+    def followings_count(self):
         return self.follows.count()
 
     def __str__(self) -> str:

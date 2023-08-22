@@ -11,8 +11,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = [
             "id",
-            "get_followers",
-            "get_followings",
+            "followers_count",
+            "followings_count",
             "image",
             "email",
             "password",
@@ -62,9 +62,9 @@ class UserDetailSerializer(UserSerializer):
         model = get_user_model()
         fields = [
             "id",
-            "get_followers",
+            "followers_count",
             "followers",
-            "get_followings",
+            "followings_count",
             "follows",
             "image",
             "email",
