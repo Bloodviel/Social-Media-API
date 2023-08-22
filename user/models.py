@@ -105,11 +105,11 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property
-    def get_comments(self):
+    def comments_count(self):
         return self.comments.count()
 
     @property
-    def get_likes(self):
+    def likes_count(self):
         return self.likes.count()
 
     class Meta:

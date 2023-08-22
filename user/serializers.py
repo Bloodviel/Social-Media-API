@@ -109,8 +109,8 @@ class PostListSerializer(PostSerializer):
             "title",
             "created_by",
             "created_at",
-            "get_comments",
-            "get_likes",
+            "comments_count",
+            "likes_count",
         ]
 
 
@@ -131,9 +131,9 @@ class PostDetailSerializer(PostSerializer):
             "content",
             "created_by",
             "created_at",
-            "get_comments",
+            "comments_cout",
             "comments",
-            "get_likes",
+            "likes_count",
         ]
 
 
