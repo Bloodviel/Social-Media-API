@@ -10,7 +10,7 @@ def create_post(user_id):
     user = get_user_model().objects.get(id=user_id)
     title = "New post"
     content = f"{title} from {user.username}"
-    hashtag = f"Celery"
+    hashtag = "Celery"
     post = Post.objects.create(
         hashtag=hashtag,
         title=title,

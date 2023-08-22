@@ -12,10 +12,23 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models import Post, Like, Comment
-from user.permissions import IsAdminOrIsAuthenticatedReadOnly, IsCreatedOrReadOnly
-from user.serializers import UserSerializer, UserDetailSerializer, UserListSerializer, UserFollowersSerializer, \
-    PostSerializer, PostListSerializer, PostDetailSerializer, LikeSerializer, LikeListSerializer, CommentSerializer, \
-    CommentListSerializer
+from user.permissions import (
+    IsAdminOrIsAuthenticatedReadOnly,
+    IsCreatedOrReadOnly
+)
+from user.serializers import (
+    CommentSerializer,
+    CommentListSerializer,
+    LikeSerializer,
+    LikeListSerializer,
+    PostSerializer,
+    PostListSerializer,
+    PostDetailSerializer,
+    UserSerializer,
+    UserDetailSerializer,
+    UserListSerializer,
+    UserFollowersSerializer
+)
 
 
 class CreateUserView(generics.CreateAPIView):

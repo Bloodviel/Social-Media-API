@@ -5,8 +5,15 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 
-from user.views import CreateUserView, ManageUserView, UserViewSet, LogoutView, PostViewSet, LikeListView, \
-    CommentListViewSet
+from user.views import (
+    CreateUserView,
+    CommentListViewSet,
+    LikeListView,
+    LogoutView,
+    ManageUserView,
+    PostViewSet,
+    UserViewSet,
+)
 
 router = DefaultRouter()
 router.register("users-list", UserViewSet)

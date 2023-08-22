@@ -26,7 +26,6 @@ class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
         """Create and save a regular User with the given email and password."""
-            
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, password, **extra_fields)
@@ -38,7 +37,6 @@ class UserManager(BaseUserManager):
 
         if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff=True.")
-            
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
 
@@ -82,7 +80,7 @@ class User(AbstractUser):
     @property
     def get_followings(self):
         return self.follows.count()
-    
+
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
