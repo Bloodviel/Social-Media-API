@@ -1,24 +1,20 @@
-from django.urls import include, path
+from django.urls import path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
 )
 
+from social.views import LikeListView
 from user.views import (
     CreateUserView,
-    CommentListViewSet,
-    LikeListView,
     LogoutView,
     ManageUserView,
-    PostViewSet,
     UserViewSet,
 )
 
 router = DefaultRouter()
-router.register("users-list", UserViewSet)
-router.register("posts", PostViewSet)
-router.register("commented-posts", CommentListViewSet)
+router.register("all", UserViewSet)
 
 urlpatterns = [
     path("register/", CreateUserView.as_view(), name="create"),
