@@ -47,7 +47,7 @@ def user_image_file_path(instance, filename):
     _, ext = os.path.splitext(filename)
     filename = f"{slugify(instance.username)}-{uuid.uuid4()}{ext}"
 
-    return os.path.join("uploads/users/", filename)
+    return os.path.join("uploads", "users", filename)
 
 
 class User(AbstractUser):
@@ -89,7 +89,7 @@ def post_image_file_path(instance, filename):
     _, ext = os.path.splitext(filename)
     filename = f"{slugify(instance.title)}-{uuid.uuid4()}{ext}"
 
-    return os.path.join("uploads/posts/", filename)
+    return os.path.join("uploads", "posts", filename)
 
 
 class Post(models.Model):
