@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 
-from user.models import Post, User
+from social.models import Post
 
 from celery import shared_task
 
