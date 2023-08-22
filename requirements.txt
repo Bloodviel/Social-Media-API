@@ -10,8 +10,11 @@ click-didyoumean==0.3.0
 click-plugins==1.1.1
 click-repl==0.3.0
 colorama==0.4.6
+cron-descriptor==1.4.0
 Django==4.2.4
+django-celery-beat==2.5.0
 django-debug-toolbar==4.1.0
+django-timezone-field==6.0
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 drf-spectacular==0.26.4
@@ -26,6 +29,7 @@ Pillow==10.0.0
 platformdirs==3.10.0
 prompt-toolkit==3.0.39
 PyJWT==2.8.0
+python-crontab==3.0.0
 python-dateutil==2.8.2
 pytz==2023.3
 PyYAML==6.0.1
